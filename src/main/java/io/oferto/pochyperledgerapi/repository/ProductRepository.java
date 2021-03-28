@@ -24,12 +24,10 @@ public class ProductRepository {
 	// helper function for getting connected to the gateway
 	private static Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.		
-		//Path walletPath = Paths.get("wallet");
 		Path walletPath = Paths.get("src", "main", "resources", "wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		
 		// load a CCP
-		//Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Path networkConfigPath = Paths.get("src", "main", "resources", "connection-org1.yaml");
 
 		Gateway.Builder builder = Gateway.createBuilder();
@@ -47,12 +45,14 @@ public class ProductRepository {
 			Network network = gateway.getNetwork("mychannel");
 			Contract contract = network.getContract("basic");
 
+			// execute the smart contract
 			byte[] result;
 
 			System.out.println("\n");
 			result = contract.evaluateTransaction("GetAllAssets");
 			System.out.println("Evaluate Transaction: GetAllAssets, result: " + new String(result));
-						
+			
+			// parse result and return
 			Gson gson = new Gson();
 			Asset[] assets = gson.fromJson(new String(result), Asset[].class);   
 					
