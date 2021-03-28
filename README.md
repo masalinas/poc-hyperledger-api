@@ -1,2 +1,2 @@
 # poc-hyperledger-api
-Poc Hyperledger Fabric in nodeJS
+Poc Hyperledger Fabric in Spring boot
