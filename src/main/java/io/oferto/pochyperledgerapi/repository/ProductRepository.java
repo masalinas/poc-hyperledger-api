@@ -21,6 +21,10 @@ import io.oferto.pochyperledgerapi.domain.Product;
 @Repository
 public class ProductRepository {
 	
+	ProductRepository() {
+		System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
+	}
+	
 	// helper function for getting connected to the gateway
 	private static Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.		
