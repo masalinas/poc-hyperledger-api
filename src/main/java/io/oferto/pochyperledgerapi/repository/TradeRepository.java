@@ -2,7 +2,6 @@ package io.oferto.pochyperledgerapi.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Network;
@@ -16,6 +15,8 @@ import io.oferto.pochyperledgerapi.domain.Trade;
 
 @Repository
 public class TradeRepository {
+	static final String CHANNEL_NAME = "mychannel";
+	static final String CONTRACT_NAME = "trade";
 	
 	@Autowired
 	BlockchainConnectorRepository blockchainConnectorRepository;
@@ -25,8 +26,8 @@ public class TradeRepository {
 		
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork("mychannel");
-			Contract contract = network.getContract("basic");
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
 
 			// execute the smart contract
 			byte[] result;
@@ -54,22 +55,100 @@ public class TradeRepository {
 		}		
 	}
 	
+	public Trade findById(String id) throws Exception {
+		try {
+			// get the network and contract
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
+
+			// execute the smart contract
+			byte[] result;
+
+			System.out.println("\n");
+			result = contract.evaluateTransaction("ReadTrade", id);
+			System.out.println("Evaluate Transaction: ReadTrade, result: " + new String(result));
+			
+			// parse result and return
+			Gson gson = new Gson();
+			AssetTrade asset = gson.fromJson(new String(result), AssetTrade.class);   
+					
+			return asset.getRecord();
+		}
+		catch(Exception e){
+			System.err.println(e);
+			
+			throw e;
+		}		
+	}
+	
 	public Trade create(Trade trade) throws Exception {
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork("mychannel");
-			Contract contract = network.getContract("basic");
-			
-			UUID uuid = UUID.randomUUID();
-			
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
+						
 			System.out.println("\n");
 			System.out.println("Submit Transaction: CreateAsset " + trade.toString());
-			//CreateAsset creates an asset with ID asset13, color yellow, owner Tom, size 5 and appraisedValue of 1300
-			contract.submitTransaction("CreateAsset", "asset13", "yellow", "5", "Tom", "1300");				
-
-			trade.setId(uuid);
+			contract.submitTransaction("CreateTrade", trade.getOwner(), trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), trade.getCreationDate().toString());				
 			
 			return trade;
+		}		
+		catch(Exception e){
+			System.err.println(e);
+			
+			throw e;
+		}
+	}
+	
+	public Trade update(String id, Trade trade) throws Exception {
+		try {
+			// get the network and contract
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
+						
+			System.out.println("\n");
+			System.out.println("Submit Transaction: UpdateTrade " + trade.toString());
+			contract.submitTransaction("UpdateTrade", id, trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), trade.getCreationDate().toString());				
+			
+			return trade;
+		}		
+		catch(Exception e){
+			System.err.println(e);
+			
+			throw e;
+		}
+	}
+	
+	public String delete(String id) throws Exception {
+		try {
+			// get the network and contract
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
+						
+			System.out.println("\n");
+			System.out.println("Submit Transaction: DeleteTrade id" + id);
+			contract.submitTransaction("DeleteTrade", id);				
+			
+			return id;
+		}		
+		catch(Exception e){
+			System.err.println(e);
+			
+			throw e;
+		}
+	}
+	
+	public String transfer(String id, String owner, Float value, Float price) throws Exception {
+		try {
+			// get the network and contract
+			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Contract contract = network.getContract(CONTRACT_NAME);
+						
+			System.out.println("\n");
+			System.out.println("Submit Transaction: TransferTrade id" + id);
+			contract.submitTransaction("TransferTrade", id, owner, value.toString(), price.toString());				
+			
+			return id;
 		}		
 		catch(Exception e){
 			System.err.println(e);

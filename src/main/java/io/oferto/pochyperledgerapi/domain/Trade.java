@@ -1,7 +1,6 @@
 package io.oferto.pochyperledgerapi.domain;
 
 import java.util.Date;
-import java.util.UUID;
 	
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -11,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class Trade {
 	@ApiModelProperty(notes = "Unique identifier of the trade. No two trades can have the same id.", example = "123e4567-e89b-42d3-a456-556642440000", required = true, position = 0)
-	private UUID ID;
+	private String ID;
 		
 	@Size(max = 255)
     @ApiModelProperty(notes = "Trade owner.", example = "Miguel Salinas", required = true, position = 1)
@@ -34,11 +33,11 @@ public class Trade {
 	private Date CreationDate;
     	
 
-	public UUID getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.ID = id;
 	}
 
