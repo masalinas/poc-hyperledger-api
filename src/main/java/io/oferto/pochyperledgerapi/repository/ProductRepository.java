@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import io.oferto.pochyperledgerapi.domain.Asset;
+import io.oferto.pochyperledgerapi.domain.AssetProduct;
 import io.oferto.pochyperledgerapi.domain.Product;
 
 @Repository
@@ -58,11 +58,11 @@ public class ProductRepository {
 			
 			// parse result and return
 			Gson gson = new Gson();
-			Asset[] assets = gson.fromJson(new String(result), Asset[].class);   
+			AssetProduct[] assets = gson.fromJson(new String(result), AssetProduct[].class);   
 					
 			products = new ArrayList<Product>();
 			
-			for (Asset asset: assets) {
+			for (AssetProduct asset: assets) {
 				products.add(asset.getRecord());
 			}
 

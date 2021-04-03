@@ -1,6 +1,6 @@
 package io.oferto.pochyperledgerapi.domain;
 
-public class Asset {
+public class AssetProduct {
 	private String Key;
 	private Product Record;
 	
