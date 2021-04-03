@@ -27,12 +27,13 @@ public class Trade {
     @Min(value = 0, message = "Trade price value in euros not be less than 0")
     @ApiModelProperty(notes = "Trade price", example = "55.2", required = true, position = 4)    
 	private Float Price;
-    
-    @NotBlank(message = "Trade creation date is mandatory")
-    @ApiModelProperty(notes = "Trade type", example = "Bid", required = true, position = 5)    
+        
+    @ApiModelProperty(notes = "Trade creation date", example = "2021-04-03T19:32:39+00:00", required = true, position = 5)    
 	private Date CreationDate;
     	
-
+    @ApiModelProperty(notes = "Trade updated date", example = "2021-04-03T19:32:39+00:00", required = true, position = 6)    
+	private Date UpdatedDate;
+    
 	public String getID() {
 		return ID;
 	}
@@ -81,6 +82,14 @@ public class Trade {
 		this.CreationDate = creationDate;
 	}
 
+	public Date getUpdatedDate() {
+		return UpdatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.UpdatedDate = updatedDate;
+	}
+	
 	@Override
 	public String toString() {
 		return "Trade [ID=" + ID + ", Owner=" + Owner + ", TradeType=" + TradeType + ", Value=" + Value + ", Price="
