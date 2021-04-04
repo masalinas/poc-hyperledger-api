@@ -35,9 +35,9 @@ public class TradeController {
 			List<Trade> trades = tradeRepository.initialize();
 					
 		    return new ResponseEntity<>(trades, HttpStatus.OK);
-		  } catch (Exception e) {
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 	
 	@GetMapping("/trades")
@@ -47,9 +47,9 @@ public class TradeController {
 			List<Trade> trades = tradeRepository.findAll();
 					
 		    return new ResponseEntity<>(trades, HttpStatus.OK);
-		  } catch (Exception e) {
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 	
 	@GetMapping("/trades/{id}")
@@ -59,9 +59,9 @@ public class TradeController {
 			Trade trade = tradeRepository.findById(id);
 					
 		    return new ResponseEntity<>(trade, HttpStatus.OK);
-		  } catch (Exception e) {
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 	
 	@PostMapping("/trades")
@@ -71,9 +71,9 @@ public class TradeController {
 			Trade result = tradeRepository.create(trade);
 					
 		    return new ResponseEntity<>(result, HttpStatus.OK);
-		  } catch (Exception e) {
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 	
 	@PutMapping("/trades/{id}")
@@ -81,11 +81,11 @@ public class TradeController {
 	public ResponseEntity<Trade> update(@PathVariable("id") String id, @RequestBody Trade trade) {
 		try {
 			Trade result = tradeRepository.update(id, trade);
-					
-		    return new ResponseEntity<>(result, HttpStatus.OK);
-		  } catch (Exception e) {
-		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+				
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@DeleteMapping("/trades/{id}")
@@ -95,20 +95,20 @@ public class TradeController {
 			tradeRepository.delete(id);
 					
 		    return new ResponseEntity<>(id, HttpStatus.OK);
-		  } catch (Exception e) {
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 	
-	@PostMapping("/trades/{id}/{owner}/{value}({price}")
-	@ApiOperation(value = "Transfer trade", nickname = "transfer")	
-	public ResponseEntity<String> transfer(@PathVariable("id") String id, @RequestBody Trade trade) {
+	@PostMapping("/trades/{idSell}/{idBuy}/{price}")
+	@ApiOperation(value = "Execute trade", nickname = "execute")	
+	public ResponseEntity<Trade> execute(@PathVariable("idSell") String idSell, @PathVariable("idBuy") String idBuy, @PathVariable("price") Float price) {
 		try {
-			tradeRepository.transfer(id, trade.getOwner(), trade.getValue(), trade.getPrice());
+			Trade trade = tradeRepository.execute(idSell, idBuy, price);
 					
-		    return new ResponseEntity<>(id, HttpStatus.OK);
-		  } catch (Exception e) {
+		    return new ResponseEntity<>(trade, HttpStatus.OK);
+		} catch (Exception e) {
 		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		  }
+		}
 	}
 }

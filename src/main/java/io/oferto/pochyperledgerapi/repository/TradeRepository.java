@@ -21,7 +21,7 @@ import io.oferto.pochyperledgerapi.domain.Trade;
 @Repository
 public class TradeRepository {
 	static final String CHANNEL_NAME = "mychannel";
-	static final String CONTRACT_NAME = "trade_v9";
+	static final String CONTRACT_NAME = "trade_v14";
 	
 	@Autowired
 	BlockchainConnectorRepository blockchainConnectorRepository;
@@ -96,9 +96,9 @@ public class TradeRepository {
 			
 			// parse result and return
 			Gson gson = new Gson();
-			Trade asset = gson.fromJson(new String(result), Trade.class);   
+			Trade trade = gson.fromJson(new String(result), Trade.class);   
 					
-			return asset;
+			return trade;
 		}
 		catch(Exception e){
 			System.err.println(e);
@@ -135,8 +135,9 @@ public class TradeRepository {
 	}
 	
 	public Trade update(String id, Trade trade) throws Exception {		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		
+		trade.setId(id);
 		trade.setUpdatedDate(new Date());
 		
 		try {
@@ -148,7 +149,7 @@ public class TradeRepository {
 			byte[] result;
 			
 			System.out.println("\n");			
-			result = contract.submitTransaction("UpdateTrade", id, trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), sdf.format(trade.getUpdatedDate()));				
+			result = contract.submitTransaction("UpdateTrade", trade.getID(), trade.getOwner(), trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), df.format(trade.getUpdatedDate()));				
 			System.out.println("Evaluate Transaction: UpdateTrade, result: " + new String(result));
 			
 			return trade;
@@ -182,7 +183,7 @@ public class TradeRepository {
 		}
 	}
 	
-	public String transfer(String id, String owner, Float value, Float price) throws Exception {
+	public Trade execute(String idSell, String idBuy, Float price) throws Exception {				
 		try {
 			// get the network and contract
 			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
@@ -192,10 +193,14 @@ public class TradeRepository {
 			byte[] result;
 			
 			System.out.println("\n");			
-			result = contract.submitTransaction("TransferTrade", id, owner, value.toString(), price.toString());				
+			result = contract.submitTransaction("ExecutedTrade", idSell, idBuy, price.toString());				
 			System.out.println("Evaluate Transaction: DeleteTrade, result: " + new String(result));
 			
-			return id;
+			// parse result and return
+			Gson gson = new Gson();
+			Trade trade = gson.fromJson(new String(result), Trade.class);   
+					
+			return trade;
 		}		
 		catch(Exception e){
 			System.err.println(e);
