@@ -7,12 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.Network;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
+
+import org.hyperledger.fabric.gateway.Contract;
+import org.hyperledger.fabric.gateway.Network;
 
 import io.oferto.pochyperledgerapi.domain.AssetTrade;
 import io.oferto.pochyperledgerapi.domain.Trade;
@@ -95,9 +96,9 @@ public class TradeRepository {
 			
 			// parse result and return
 			Gson gson = new Gson();
-			AssetTrade asset = gson.fromJson(new String(result), AssetTrade.class);   
+			Trade asset = gson.fromJson(new String(result), Trade.class);   
 					
-			return asset.getRecord();
+			return asset;
 		}
 		catch(Exception e){
 			System.err.println(e);
@@ -116,10 +117,13 @@ public class TradeRepository {
 			// get the network and contract
 			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
-									
-			System.out.println("\n");
-			System.out.println("Submit Transaction: CreateAsset " + trade.toString());
-			contract.submitTransaction("CreateTrade", trade.getID(), trade.getOwner(), trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), df.format(trade.getCreationDate()));				
+						
+			// execute the smart contract
+			byte[] result;
+						
+			System.out.println("\n");			
+			result = contract.submitTransaction("CreateTrade", trade.getID(), trade.getOwner(), trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), df.format(trade.getCreationDate()));				
+			System.out.println("Evaluate Transaction: CreateTrade, result: " + new String(result));
 			
 			return trade;
 		}		
@@ -131,17 +135,21 @@ public class TradeRepository {
 	}
 	
 	public Trade update(String id, Trade trade) throws Exception {		
-		trade.setCreationDate(new Date());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		
+		trade.setUpdatedDate(new Date());
 		
 		try {
 			// get the network and contract
 			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
-						
-			System.out.println("\n");
-			System.out.println("Submit Transaction: UpdateTrade " + trade.toString());
-			contract.submitTransaction("UpdateTrade", id, trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), sdf.format(trade.getCreationDate()));				
+			
+			// execute the smart contract
+			byte[] result;
+			
+			System.out.println("\n");			
+			result = contract.submitTransaction("UpdateTrade", id, trade.getTradeType(), trade.getValue().toString(), trade.getPrice().toString(), sdf.format(trade.getUpdatedDate()));				
+			System.out.println("Evaluate Transaction: UpdateTrade, result: " + new String(result));
 			
 			return trade;
 		}		
@@ -157,10 +165,13 @@ public class TradeRepository {
 			// get the network and contract
 			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
-						
-			System.out.println("\n");
-			System.out.println("Submit Transaction: DeleteTrade id" + id);
-			contract.submitTransaction("DeleteTrade", id);				
+			
+			// execute the smart contract
+			byte[] result;
+			
+			System.out.println("\n");			
+			result = contract.submitTransaction("DeleteTrade", id);				
+			System.out.println("Evaluate Transaction: DeleteTrade, result: " + new String(result));
 			
 			return id;
 		}		
@@ -177,9 +188,12 @@ public class TradeRepository {
 			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 						
-			System.out.println("\n");
-			System.out.println("Submit Transaction: TransferTrade id" + id);
-			contract.submitTransaction("TransferTrade", id, owner, value.toString(), price.toString());				
+			// execute the smart contract
+			byte[] result;
+			
+			System.out.println("\n");			
+			result = contract.submitTransaction("TransferTrade", id, owner, value.toString(), price.toString());				
+			System.out.println("Evaluate Transaction: DeleteTrade, result: " + new String(result));
 			
 			return id;
 		}		

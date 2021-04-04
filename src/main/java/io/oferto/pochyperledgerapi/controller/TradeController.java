@@ -2,8 +2,6 @@ package io.oferto.pochyperledgerapi.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +10,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -41,7 +41,7 @@ public class TradeController {
 	}
 	
 	@GetMapping("/trades")
-	@ApiOperation(value = "Get all trades", nickname = "getAllTrades")	
+	@ApiOperation(value = "Get all trades", nickname = "getAll")	
 	public ResponseEntity<List<Trade>> getAll() {
 		try {
 			List<Trade> trades = tradeRepository.findAll();
@@ -66,7 +66,7 @@ public class TradeController {
 	
 	@PostMapping("/trades")
 	@ApiOperation(value = "Create trade", nickname = "create")	
-	public ResponseEntity<Trade> create(@Valid Trade trade) {
+	public ResponseEntity<Trade> create(@RequestBody Trade trade) {
 		try {
 			Trade result = tradeRepository.create(trade);
 					
@@ -76,9 +76,9 @@ public class TradeController {
 		  }
 	}
 	
-	@PostMapping("/update/{id}")
+	@PutMapping("/trades/{id}")
 	@ApiOperation(value = "Update trade", nickname = "update")	
-	public ResponseEntity<Trade> update(@PathVariable("id") String id, @Valid Trade trade) {
+	public ResponseEntity<Trade> update(@PathVariable("id") String id, @RequestBody Trade trade) {
 		try {
 			Trade result = tradeRepository.update(id, trade);
 					
@@ -101,10 +101,10 @@ public class TradeController {
 	}
 	
 	@PostMapping("/trades/{id}/{owner}/{value}({price}")
-	@ApiOperation(value = "Transfer trade", nickname = "transferTrade")	
-	public ResponseEntity<String> transfer(@PathVariable("id") String id, @PathVariable("owner") String owner, @PathVariable("value") Float value, @PathVariable("price") Float price) {
+	@ApiOperation(value = "Transfer trade", nickname = "transfer")	
+	public ResponseEntity<String> transfer(@PathVariable("id") String id, @RequestBody Trade trade) {
 		try {
-			tradeRepository.transfer(id, owner, value, price);
+			tradeRepository.transfer(id, trade.getOwner(), trade.getValue(), trade.getPrice());
 					
 		    return new ResponseEntity<>(id, HttpStatus.OK);
 		  } catch (Exception e) {
