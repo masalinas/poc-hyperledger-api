@@ -21,7 +21,7 @@ import io.oferto.pochyperledgerapi.domain.Trade;
 @Repository
 public class TradeRepository {
 	static final String CHANNEL_NAME = "mychannel";
-	static final String CONTRACT_NAME = "trade_v14";
+	static final String CONTRACT_NAME = "trade_v15";
 	
 	@Autowired
 	BlockchainConnectorRepository blockchainConnectorRepository;

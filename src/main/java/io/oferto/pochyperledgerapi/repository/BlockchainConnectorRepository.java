@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 
 @Repository
 public class BlockchainConnectorRepository {
+	static final String IDENTITY_USERNAME = "appUser";
+	
 	private Gateway gateway;
 	
 	BlockchainConnectorRepository() throws Exception {
@@ -29,7 +31,7 @@ public class BlockchainConnectorRepository {
 		Path networkConfigPath = Paths.get("src", "main", "resources", "connection-org1.yaml");
 
 		Gateway.Builder builder = Gateway.createBuilder();
-		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
+		builder.identity(wallet, IDENTITY_USERNAME).networkConfig(networkConfigPath).discovery(true);
 				
 		return builder.connect();
 	}
