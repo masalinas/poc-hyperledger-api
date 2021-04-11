@@ -9,4 +9,4 @@ Poc Hyperledger Fabric in Spring boot
 ```
 
 # Swagger API Document
-![image](https://user-images.githubusercontent.com/1216181/114089164-1ba1f200-98b6-11eb-90f5-ab623bbf4ec1.png)
+![image](https://user-images.githubusercontent.com/1216181/114314040-6a8b9980-9af9-11eb-8f39-8cb842d2cf1f.png)
