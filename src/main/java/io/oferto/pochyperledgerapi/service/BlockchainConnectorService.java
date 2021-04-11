@@ -10,24 +10,25 @@ import java.nio.file.Paths;
 
 @Service
 public class BlockchainConnectorService {
-	static final String IDENTITY_USERNAME = "appUser";
+	private static final String GATEWAY_CONNECTION = "connection-org1.yaml";
+	private static final String IDENTITY_USERNAME = "appUser";	
 	
 	private Gateway gateway;
 	
 	BlockchainConnectorService() throws Exception {
 		System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
 		
-		this.gateway = connect();
+		//this.gateway = connect();
 	}
 	
 	// helper function for getting connected to the gateway
-	private static Gateway connect() throws Exception {
+	public Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.		
 		Path walletPath = Paths.get("src", "main", "resources", "wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		
 		// load a CCP
-		Path networkConfigPath = Paths.get("src", "main", "resources", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("src", "main", "resources", GATEWAY_CONNECTION);
 
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, IDENTITY_USERNAME).networkConfig(networkConfigPath).discovery(true);
@@ -37,5 +38,9 @@ public class BlockchainConnectorService {
 	
 	public Gateway getGateway() {
 		return gateway;
+	}
+	
+	public void setGateway(Gateway gateway) {
+		this.gateway = gateway;
 	}
 }

@@ -12,7 +12,6 @@ import org.hyperledger.fabric_ca.sdk.HFCAClient;
 
 @Service
 public class CAConnectorService {
-	private static final String CA_WALLET = "wallet";
 	private static final String CA_CERTIFICATE = "ca.org1.example.com-cert.pem";
 	private static final String CA_ALLOW_ALL_HOSTNAMES = "true";
 	private static final String CA_HOST = "https://localhost:7054";
@@ -55,10 +54,6 @@ public class CAConnectorService {
 		return this.hfCAClient;
 	}
 
-	public String getWallet() {
-		return CAConnectorService.CA_WALLET;
-	}
-		
 	public String getMSPId() {
 		return CAConnectorService.CA_MSP_ID;
 	}

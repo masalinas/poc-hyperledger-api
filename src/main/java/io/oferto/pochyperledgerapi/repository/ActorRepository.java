@@ -22,16 +22,24 @@ import org.hyperledger.fabric_ca.sdk.EnrollmentRequest;
 import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 
 import io.oferto.pochyperledgerapi.domain.Actor;
+import io.oferto.pochyperledgerapi.service.BlockchainConnectorService;
 import io.oferto.pochyperledgerapi.service.CAConnectorService;
 
 @Repository
 public class ActorRepository {	
 	@Autowired
 	CAConnectorService caConnectorService;
-		
+	
+	@Autowired
+	BlockchainConnectorService blockchainConnectorService;
+	
 	@PostConstruct
 	public void init(){
+		// init wallet
 		this.initializeWallet();
+		
+		// connect to blockchain
+		this.connectBlockchain();
 	}
 		
 	private void initializeWallet() {
@@ -43,22 +51,31 @@ public class ActorRepository {
 		}
 		
 		try {
+			// register appUser
 			Actor actorApppUser = new Actor();
 			actorApppUser.setName(caConnectorService.getAppUserName());
 			
-			// register appUser
 			this.register(actorApppUser);
 			
 			// enroll appUser
 			this.enroll(actorApppUser);		
 		} catch (Exception e) {
-			// do nothing is appUser is already enrolled			
+			// do nothing			
+		}
+	}
+	
+	private void connectBlockchain() {
+		try {
+			// connect to blockchain
+			this.blockchainConnectorService.setGateway(this.blockchainConnectorService.connect());
+		} catch (Exception e) {
+			// do nothing			
 		}
 	}
 	
 	private void enrollAdmin() throws Exception {
 		// load backend wallet
-		Path walletPath = Paths.get("src", "main", "resources", caConnectorService.getWallet());
+		Path walletPath = Paths.get("src", "main", "resources", "wallet");
 		
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 
@@ -82,7 +99,7 @@ public class ActorRepository {
 	
 	public Actor register(Actor actor) throws Exception {
 		// load backend wallet from configuration
-		Path walletPath = Paths.get("src", "main", "resources", caConnectorService.getWallet());
+		Path walletPath = Paths.get("src", "main", "resources", "wallet");
 				 
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 	
@@ -159,7 +176,7 @@ public class ActorRepository {
 	
 	public Actor enroll(Actor actor) throws Exception {
 		// load backend wallet from configuration
-		Path walletPath = Paths.get("src", "main", "resources", caConnectorService.getWallet());
+		Path walletPath = Paths.get("src", "main", "resources", "wallet");
 				 
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 	
