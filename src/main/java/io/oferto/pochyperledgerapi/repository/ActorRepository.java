@@ -21,12 +21,7 @@ import org.hyperledger.fabric_ca.sdk.RegistrationRequest;
 import io.oferto.pochyperledgerapi.domain.Actor;
 
 @Repository
-public class ActorRepository {
-	static final String ENROLLMENT_REQUEST_HOST = "host";
-	static final String ENROLLMENT_REQUEST_TLS = "tls";
-	static final String ENROLLMENT_REQUEST_ADMIN_NAME = "admin";
-	static final String ENROLLMENT_REQUEST_ADMIN_SECRET = "adminpw";
-	
+public class ActorRepository {	
 	@Autowired
 	CAConnectorRepository caConnectorRepository;
 	
@@ -43,7 +38,7 @@ public class ActorRepository {
 			throw new Exception("An identity for the user \"appUser\" already exists in the wallet");
 		}
 				
-		X509Identity adminIdentity = (X509Identity)wallet.get(ENROLLMENT_REQUEST_ADMIN_NAME);
+		X509Identity adminIdentity = (X509Identity)wallet.get(caConnectorRepository.getAdminName());
 		
 		if (adminIdentity == null) {
 			System.out.println("\"admin\" needs to be enrolled and added to the wallet first");
@@ -114,11 +109,11 @@ public class ActorRepository {
 		// create the wallet identity from actor enrollmented
 		Identity user = Identities.newX509Identity(caConnectorRepository.getMSPId(), enrollment);
 		
-		// pèrsist the new identity in the wallet
 		// load backend wallet from configuration
 		Path walletPath = Paths.get("src", "main", "resources", caConnectorRepository.getWallet());
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
-				
+		
+		// persist the identity in the wallet
 		wallet.put(actor.getName(), user);
 		
 		return actor;
