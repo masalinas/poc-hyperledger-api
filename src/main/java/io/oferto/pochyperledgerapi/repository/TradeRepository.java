@@ -17,6 +17,7 @@ import org.hyperledger.fabric.gateway.Network;
 
 import io.oferto.pochyperledgerapi.domain.AssetTrade;
 import io.oferto.pochyperledgerapi.domain.Trade;
+import io.oferto.pochyperledgerapi.service.BlockchainConnectorService;
 
 @Repository
 public class TradeRepository {
@@ -24,12 +25,12 @@ public class TradeRepository {
 	static final String CONTRACT_NAME = "trade_v15";
 	
 	@Autowired
-	BlockchainConnectorRepository blockchainConnectorRepository;
+	BlockchainConnectorService blockchainConnectorService;
 	
 	public List<Trade> initialize() throws Exception {
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 						
 			System.out.println("\n");
@@ -52,7 +53,7 @@ public class TradeRepository {
 		
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 
 			// execute the smart contract
@@ -84,7 +85,7 @@ public class TradeRepository {
 	public Trade findById(String id) throws Exception {
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 
 			// execute the smart contract
@@ -115,7 +116,7 @@ public class TradeRepository {
 		
 		try {			
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 						
 			// execute the smart contract
@@ -142,7 +143,7 @@ public class TradeRepository {
 		
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 			
 			// execute the smart contract
@@ -164,7 +165,7 @@ public class TradeRepository {
 	public String delete(String id) throws Exception {
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 			
 			// execute the smart contract
@@ -186,7 +187,7 @@ public class TradeRepository {
 	public Trade execute(String idSell, String idBuy, Float price) throws Exception {				
 		try {
 			// get the network and contract
-			Network network = blockchainConnectorRepository.getGateway().getNetwork(CHANNEL_NAME);
+			Network network = blockchainConnectorService.getGateway().getNetwork(CHANNEL_NAME);
 			Contract contract = network.getContract(CONTRACT_NAME);
 						
 			// execute the smart contract

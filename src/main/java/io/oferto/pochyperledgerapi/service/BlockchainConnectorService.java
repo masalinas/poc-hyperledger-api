@@ -1,7 +1,6 @@
-package io.oferto.pochyperledgerapi.repository;
+package io.oferto.pochyperledgerapi.service;
 
-import org.springframework.stereotype.Repository;
-
+import org.springframework.stereotype.Service;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;
@@ -9,13 +8,13 @@ import org.hyperledger.fabric.gateway.Wallets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Repository
-public class BlockchainConnectorRepository {
+@Service
+public class BlockchainConnectorService {
 	static final String IDENTITY_USERNAME = "appUser";
 	
 	private Gateway gateway;
 	
-	BlockchainConnectorRepository() throws Exception {
+	BlockchainConnectorService() throws Exception {
 		System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
 		
 		this.gateway = connect();
